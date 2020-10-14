@@ -2,15 +2,10 @@
 // START YOUR APP HERE
 // ================================
 
-// KEN: You can delete this code..
-setTimeout(function () {
-  alert('Getting Started? Look for app/index.js..');
-}, 500);
-
 /*
 
   KEN: Do not modify `calculateWinner` function.
-  
+
   Use 'calculateWinner' function to determine if there is a winner.
 
   Pass in an array of 'X', 'O'.
@@ -66,3 +61,38 @@ function calculateWinner(squares) {
   KEN: Your code starts below..
 
  */
+
+const boxsNodeList = document.querySelectorAll(".board__box");
+const boxsArray = Array.from(boxsNodeList);
+
+let arrayOfO = [];
+let arrayOfX = [];
+
+function turnChanger(){
+}
+
+function paintBox(targetBox){
+  const oMark = "⭕";
+  const xMark = "❌";
+
+  if(arrayOfO.length === arrayOfX.length){
+    targetBox.textContent = oMark;
+    arrayOfO.push(targetBox.id);
+    console.log(arrayOfO);
+  }else{
+    targetBox.textContent = xMark;
+    arrayOfX.push(targetBox.id);
+    console.log(arrayOfX);
+  }
+
+}
+
+function handleClick(e){
+  const targetId = e.target.id;
+  const targetBox = document.getElementById(`${targetId}`); // document.querySelector(`#${targetId}`) 는 오류가 남, 알아보기.
+  paintBox(targetBox);
+}
+
+
+boxsArray.map(e=> e.addEventListener("click", handleClick));
+
