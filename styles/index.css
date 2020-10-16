@@ -58,6 +58,7 @@ header{
   border-radius: 5px;
   background-color: rgb(157, 135, 235);
   box-shadow: 4px 4px 0px 0px rgb(109, 102, 175);
+  cursor: pointer;
 }
 
 .gameStatus{

@@ -62,6 +62,7 @@ function calculateWinner(squares) {
  */
 
 const startBtn = document.querySelector(".startBtn");
+const board = document.querySelector(".board");
 const boxsNodeList = document.querySelectorAll(".board__box");
 const boxsArray = Array.from(boxsNodeList);
 const turnTeller = document.querySelector(".turnTeller");
@@ -111,7 +112,8 @@ function resetBoard(){
 }
 
 function gameOver(){
-  boxsArray.map(e=> e.removeEventListener("click", handleClick));
+  // boxsArray.map(e=> e.removeEventListener("click", handleClick));
+  board.removeEventListener("click", handleClick);
   paintContent(tipTeller, "ReStart로 다시 도전하세YO");
 }
 
@@ -169,7 +171,8 @@ function handleClick(e){
 }
 
 function gameStart(){
-  boxsArray.map(e=> e.addEventListener("click", handleClick));
+  // boxsArray.map(e=> e.addEventListener("click", handleClick));
+  board.addEventListener("click", handleClick);
   resetBoard();
 }
 
