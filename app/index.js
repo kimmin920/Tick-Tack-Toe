@@ -61,14 +61,17 @@ function calculateWinner(squares) {
 
  */
 
-//  ox 한번 등록되면 덮혀지지않게 하기
-
 const startBtn = document.querySelector(".startBtn");
 const boxsNodeList = document.querySelectorAll(".board__box");
 const boxsArray = Array.from(boxsNodeList);
 const turnTeller = document.querySelector(".turnTeller");
 const winnerTeller = document.querySelector(".winnerTeller");
 const tipTeller = document.querySelector(".tipTeller");
+
+const marks = {
+  O :"⭕",
+  X :"❌",
+}
 
 let arrayOfO = [];
 let arrayOfX = [];
@@ -77,72 +80,99 @@ let squares = [
   null, null, null,
   null, null, null,
 ];
-function resetBoard(){
- arrayOfO = [];
- arrayOfX = [];
- squares = [
-  null, null, null,
-  null, null, null,
-  null, null, null,
-];
-  boxsArray.map(e => e.textContent = "");
-  winnerTeller.textContent = "";
-  tipTeller.textContent = "경기 시작!";
-  turnTeller.textContent = "O";
-//확실하게 이게 전역객체를 조작 하는지?
+
+function getTextsForTurnAndWin( turn, what = "차례" ){ //함수명.. 어케하면 좋을까요?
+  turn = marks[turn] || null;
+  return turn ? `${turn}의 ${what}입니다.` : "무승부 입니다.";
 }
+
+function paintContent(teller, what){
+  teller.textContent = what;
+}
+
+function resetBoard(){
+  arrayOfO = [];
+  arrayOfX = [];
+  squares = [
+    null, null, null,
+    null, null, null,
+    null, null, null,
+  ];
+
+  boxsArray.map(e => paintContent(e, null));
+  paintContent(winnerTeller, null);
+  paintContent(tipTeller, "경기시작");
+  paintContent(turnTeller, getTextsForTurnAndWin("O"));
+}
+
+function gameOver(){
+  boxsArray.map(e=> e.removeEventListener("click", handleClick));
+  paintContent(tipTeller, "ReStart 버튼으로 다시 도전하세YO");
+}
+
+function paintBox(targetBox, turn){
+  let arrayOfTurn = turn === "O" ? arrayOfO : arrayOfX;
+  arrayOfTurn.push(targetBox.id);
+  squares[targetBox.id] = turn;
+  paintContent(targetBox, marks[turn]);
+  paintContent(turnTeller, getTextsForTurnAndWin(turn === "O" ? "X" : "O"));
+}
+
+function paintDraw(){
+  paintContent(winnerTeller, getTextsForTurnAndWin("무승부"));
+  paintContent(turnTeller, null);
+  return true;
+}
+
+function getResult(){
+  const result = calculateWinner(squares);
+
+  if(result){
+    paintContent(winnerTeller,  getTextsForTurnAndWin(result,"승리"));
+    paintContent(turnTeller, null);
+    gameOver();
+    return;
+  }
+
+  const isDraw = squares.indexOf(null) === -1 ? true : false;
+  isDraw && paintDraw() && gameOver();
+}
+
+function getTip(isOccupied){
+  return isOccupied ? "딴대놔라" : (tipTeller.textContent === "딴대놔라") ? "잘했어YO" : null;
+}
+
+function getIsOccupied(targetId){
+  return squares[targetId] ? true : false;
+}
+
+function handleClick(e){
+  const targetId = e.target.id;
+  const isOccupied = getIsOccupied(targetId);
+  paintContent(tipTeller, getTip(isOccupied));
+
+  if(isOccupied){
+    return;
+  }
+
+  const targetBox = document.getElementById(`${targetId}`); // document.querySelector(`#${targetId}`) 는 안됨. 알아보기.
+  const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
+  paintBox(targetBox, whosTurn);
+  getResult();
+}
+
 function gameStart(){
   boxsArray.map(e=> e.addEventListener("click", handleClick));
   resetBoard();
 }
 
-function gameOver(){
-  boxsArray.map(e=> e.removeEventListener("click", handleClick));
-  tipTeller.textContent = "ReStart 버튼으로 다시 도전해";
-}
-
-function paintBox(targetBox){
-  const oMark = "⭕";
-  const xMark = "❌";
-
-  if(arrayOfO.length === arrayOfX.length){
-    targetBox.textContent = oMark;
-    arrayOfO.push(targetBox.id);
-    squares[targetBox.id] = "O";
-    turnTeller.textContent = "X";
-  }else{
-    targetBox.textContent = xMark;
-    arrayOfX.push(targetBox.id);
-    squares[targetBox.id] = "X";
-    turnTeller.textContent = "O";
-  }
-
-  const result = calculateWinner(squares);
-  if(result){
-    winnerTeller.textContent = result;
-    turnTeller.textContent = "";
-    gameOver();
-  }
-}
-
-function handleClick(e){
-  const targetId = e.target.id;
-
-  if(squares[targetId]){
-    tipTeller.textContent = "딴대 놔라";
-    return;
-  }
-  if(tipTeller.textContent === "딴대 놔라"){
-    tipTeller.textContent = "잘했어";
-  }else{
-    tipTeller.textContent = "";
-  }
-  const targetBox = document.getElementById(`${targetId}`); // document.querySelector(`#${targetId}`) 는 안됨. 알아보기.
-  paintBox(targetBox);
-}
 function handleStartBtn(e){
   gameStart();
-  startBtn.textContent = "ReStart";
+  paintContent(startBtn, "ReStart");
 }
-startBtn.addEventListener("click", handleStartBtn);
 
+function init(){
+  startBtn.addEventListener("click", handleStartBtn);
+}
+
+init();
