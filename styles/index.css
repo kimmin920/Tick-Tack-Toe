@@ -8,6 +8,7 @@ body{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -51,14 +52,25 @@ header{
 .startBtn{
   border: none;
   width: 150px;
-  height: 30px;
+  height: 38px;
   font-size: larger;
   color: white;
   font-weight: bolder;
-  border-radius: 5px;
+  border-radius: 15px;
   background-color: rgb(157, 135, 235);
-  box-shadow: 4px 4px 0px 0px rgb(109, 102, 175);
+  box-shadow: 0px 9px rgb(95, 89, 151);
+  outline: none;
   cursor: pointer;
+}
+
+.startBtn:hover{
+  background-color: rgb(141, 125, 199);
+}
+
+.startBtn:active{
+  background-color: rgb(141, 125, 199);
+  box-shadow: 0px 5px rgb(73, 68, 116);
+  transform: translateY(4px);
 }
 
 .gameStatus{
@@ -67,4 +79,5 @@ header{
 
 .gameStatus .gameStatus__winner{
   display: none;
+  width: fit-content;
 }

@@ -70,6 +70,8 @@ const winnerTeller = document.querySelector(".winnerTeller");
 const tipTeller = document.querySelector(".tipTeller");
 const gameStatus = document.querySelector(".gameStatus");
 const gameStatus__winner = document.querySelector(".gameStatus__winner");
+const gameStatus__turn = document.querySelector(".gameStatus__turn");
+const gameStatus__tip = document.querySelector(".gameStatus__tip");
 
 const marks = {
   O :"⚫",
@@ -86,11 +88,15 @@ let squares = [
 
 function getTextsForTurnAndWin( turn, what = "차례" ){ //함수명.. 어케하면 좋을까요?
   turn = marks[turn] || null;
-  return turn ? `${turn}의 ${what}입니다.` : "무승부 입니다.";
+  return turn ? `${turn}의 ${what}입니다` : "무승부 입니다";
 }
 
 function paintContent(teller, what){
   teller.textContent = what;
+}
+
+function displayChanger(element, toWhat){
+  element.style.display = toWhat;
 }
 
 function resetBoard(){
@@ -104,11 +110,12 @@ function resetBoard(){
 
   boxsArray.map(e => paintContent(e, null));
   paintContent(winnerTeller, null);
-  paintContent(tipTeller, "경기시작");
+  paintContent(tipTeller, "시작! 선빵필승");
   paintContent(turnTeller, getTextsForTurnAndWin("O"));
 
-  gameStatus.style.display = "block";
-  gameStatus__winner.style.display = "none";
+  displayChanger(gameStatus, "block");
+  displayChanger(gameStatus__turn, "block");
+  displayChanger(gameStatus__winner, "none");
 }
 
 function gameOver(){
@@ -128,7 +135,8 @@ function paintBox(targetBox, turn){
 function paintDraw(){
   paintContent(winnerTeller, getTextsForTurnAndWin("무승부"));
   paintContent(turnTeller, null);
-  gameStatus__winner.style.display = "block";
+  displayChanger(gameStatus__winner, "block");
+  displayChanger(gameStatus__turn, "none");
   return true;
 }
 
@@ -136,8 +144,9 @@ function getResult(){
   const result = calculateWinner(squares);
 
   if(result){
-    gameStatus__winner.style.display = "block";
-    paintContent(winnerTeller,  getTextsForTurnAndWin(result,"승리"));
+    displayChanger(gameStatus__turn, "none");
+    displayChanger(gameStatus__winner, "block");
+    paintContent(winnerTeller, getTextsForTurnAndWin(result, "승리"));
     paintContent(turnTeller, null);
     gameOver();
     return;
@@ -164,7 +173,8 @@ function handleClick(e){
     return;
   }
 
-  const targetBox = document.getElementById(`${targetId}`); // document.querySelector(`#${targetId}`) 는 안됨. 알아보기.
+  // document.querySelector(`#${targetId}`)는 오류 => '#숫자'는 선택자로 쓸수 없다고 한다.
+  const targetBox = document.getElementById(`${targetId}`);
   const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
   paintBox(targetBox, whosTurn);
   getResult();
