@@ -126,6 +126,7 @@ function paintBox(targetBox, turn){
 function paintDraw(){
   paintContent(winnerTeller, getTextsForTurnAndWin("무승부"));
   paintContent(turnTeller, null);
+  gameStatus__winner.style.display = "block";
   return true;
 }
 
