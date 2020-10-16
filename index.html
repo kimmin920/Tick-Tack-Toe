@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width">
   <title>Vanilla Coding | Bootcamp Prep</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Poor+Story&display=swap" rel="stylesheet">
   <link href="./styles/index.css" rel="stylesheet" />
 </head>
 <body>
   <h1>띡땍또</h1>
   <header>
     <button class="startBtn"> GAME START </button>
-    <div> TURN : <span class="turnTeller"></span></div>
-    <div> Winner : <span class="winnerTeller"></span></div>
-    <div> Tip : <span class="tipTeller"></span></div>
+    <div class="gameStatus">
+      <div>📌TURN : <span class="turnTeller"></span></div>
+      <div class="gameStatus__winner">🎉Winner : <span class="winnerTeller"></span>🎉</div>
+      <div>💡 TIP : <span class="tipTeller"></span></div>
+    </div>
   </header>
   <section>
     <div class="board">

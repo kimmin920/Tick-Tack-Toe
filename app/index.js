@@ -67,10 +67,12 @@ const boxsArray = Array.from(boxsNodeList);
 const turnTeller = document.querySelector(".turnTeller");
 const winnerTeller = document.querySelector(".winnerTeller");
 const tipTeller = document.querySelector(".tipTeller");
+const gameStatus = document.querySelector(".gameStatus");
+const gameStatus__winner = document.querySelector(".gameStatus__winner");
 
 const marks = {
-  O :"⭕",
-  X :"❌",
+  O :"⚫",
+  X :"⚪",
 }
 
 let arrayOfO = [];
@@ -103,11 +105,14 @@ function resetBoard(){
   paintContent(winnerTeller, null);
   paintContent(tipTeller, "경기시작");
   paintContent(turnTeller, getTextsForTurnAndWin("O"));
+
+  gameStatus.style.display = "block";
+  gameStatus__winner.style.display = "none";
 }
 
 function gameOver(){
   boxsArray.map(e=> e.removeEventListener("click", handleClick));
-  paintContent(tipTeller, "ReStart 버튼으로 다시 도전하세YO");
+  paintContent(tipTeller, "ReStart로 다시 도전하세YO");
 }
 
 function paintBox(targetBox, turn){
@@ -128,6 +133,7 @@ function getResult(){
   const result = calculateWinner(squares);
 
   if(result){
+    gameStatus__winner.style.display = "block";
     paintContent(winnerTeller,  getTextsForTurnAndWin(result,"승리"));
     paintContent(turnTeller, null);
     gameOver();
