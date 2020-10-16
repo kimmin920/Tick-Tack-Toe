@@ -46,7 +46,7 @@ function calculateWinner(squares) {
   ];
 
   for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];  // 알아보기! 비구조화 할당?
+    const [a, b, c] = lines[i];  // 알아보기! 비구조화 할당? 이 맞나요? 찾아보고 있는데 이해가 잘 안되네욥..
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
@@ -157,7 +157,7 @@ function getResult(){
 }
 
 function getTip(isOccupied){
-  return isOccupied ? "딴대놔라" : (tipTeller.textContent === "딴대놔라") ? "잘했어YO" : null;
+  return isOccupied ? "딴대놔라" : (tipTeller.textContent === "딴대놔라") ? "잘했어YO!" : null;
 }
 
 function getIsOccupied(targetId){
@@ -173,8 +173,18 @@ function handleClick(e){
     return;
   }
 
-  // document.querySelector(`#${targetId}`)는 오류 => '#숫자'는 선택자로 쓸수 없다고 한다.
-  const targetBox = document.getElementById(`${targetId}`);
+  // document.querySelector(`#${targetId}`);
+  // 위는 오류가 나서 찾아봤더니 #숫자는 쓸수 없다는 것을 알게되었습니당. 이유는 그냥 셀렉터의 특성이라고 하던데..맞나요?
+  // document.querySelector("[id='1']") 처럼 써야 한다고 해서 아래 코드처럼 string화 해서 썼습니당.
+  // const targetBox = document.querySelector(`[id=${JSON.stringify(targetId)}]`);
+  // 또 다른 방법도 찾긴 했씁니다.(아래)
+  // const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);
+
+  // querySelector로 통일하기 위해서 저렇게 했는데요! 더 좋은 방법이 있을까요?
+  // 아님 그냥 아래처럼 통일성이 없어도 getElmentById를 쓰는게 나을까요?
+  // const targetBox = document.getElementById(`${targetId}`);
+
+  const targetBox = document.querySelector(`[id=${JSON.stringify(targetId)}]`);
   const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
   paintBox(targetBox, whosTurn);
   getResult();
