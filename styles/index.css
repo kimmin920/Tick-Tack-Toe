@@ -47,6 +47,7 @@ header{
   justify-content: space-around;
   align-items: center;
   font-family: 'Poor Story', cursive;
+  position: relative;
 }
 
 .startBtn{
@@ -63,6 +64,30 @@ header{
   cursor: pointer;
 }
 
+.versusBtn{
+  /* background-color: rgb(235, 147, 135); */
+  width: 80px;
+  height: 30px;
+  position: absolute;
+  right: 0;
+  color: white;
+  font-size: 22px;
+  font-family: 'East Sea Dokdo', cursive;
+  border-radius: 5px;
+  background-color: grey;
+  box-shadow: 0px 5px rgb(117, 117, 117);
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.versusBtn:hover{
+  background-color: rgb(168, 167, 167);
+}
+.versusBtn:active{
+  background-color: rgb(248, 255, 143);
+  box-shadow: 0px 2px rgb(131, 133, 122);
+  transform: translateY(4px);
+}
 .startBtn:hover{
   background-color: rgb(141, 125, 199);
 }

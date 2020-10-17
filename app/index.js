@@ -86,7 +86,10 @@ let squares = [
   null, null, null,
 ];
 
-function getTextsForTurnAndWin(turn, what = "차례" ){ //함수명.. 어케하면 좋을까요?
+let isBetagoOn = false;
+let isGameOver = false;
+
+function getTextsForTurnAndWin(turn, what = "차례" ){  //함수명.. 어케하면 좋을까요?
   turn = marks[turn] || null;
   return turn ? `${turn}의 ${what}입니다` : "무승부 입니다";
 }
@@ -119,10 +122,10 @@ function resetBoard(){
 }
 
 function gameOver(){
-  // boxsArray.map(e=> e.removeEventListener("click", handleClick));
   board.removeEventListener("click", handleClick);
   boxsArray.map(e=> e.removeEventListener("mouseenter", handleMouseIn));
   paintContent(tipTeller, "ReStart로 다시 도전하세YO");
+  isGameOver = true;
 }
 
 function paintBox(targetBox, turn){
@@ -147,6 +150,9 @@ function paintScoreBoard(result){
 }
 
 function getResult(){
+  if(isGameOver){
+    return;
+  }
   const result = calculateWinner(squares);
 
   if(result){
@@ -172,10 +178,9 @@ function getIsOccupied(targetId){
 }
 
 function handleClick(e){
-  const [targetId, targetBox, whosTurn] = getTargetAndTurn(e);
+  let [targetId, targetBox, whosTurn] = getTargetAndTurn(e);
   const isOccupied = getIsOccupied(targetId);
-  boxsArray[targetId].removeEventListener("mouseleave", handleMouseLeave);
-  boxsArray[targetId].removeEventListener("mouseenter", handleMouseIn);
+  markPreviewEvent(false, boxsArray[targetId]);
   paintContent(tipTeller, getTip(isOccupied));
 
   if(isOccupied){
@@ -185,7 +190,16 @@ function handleClick(e){
   targetBox.style.color = "rgb(255, 255, 255)";
   paintBox(targetBox, whosTurn);
   getResult();
+
+  if(whosTurn === "O" && isBetagoOn){
+    if(isGameOver){
+      return;
+    }
+    let betagoObj = getBoxForBetago();
+    handleClick(betagoObj);
+  }
 }
+
 function getTargetAndTurn(e){
   const targetId = e.target.id;
   const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  //질문사항
@@ -203,6 +217,7 @@ function getTargetAndTurn(e){
   // 아님 그냥 아래처럼 통일성이 없어도 getElmentById를 쓰는게 나을까요? (사실 저는 걍 byId 쓰고싶어요ㅎㅎ..)
   // const targetBox = document.getElementById(`${targetId}`);
 }
+
 function handleMouseIn(e){
   // 아래는, 위에 켄님의 함수코드에서 보고 따라해봤는데, 왜 되는지는 이해는 안가네요...
   // 그리고 필요없는 인자를 안가져올 방법이 있을지 생각해 볼게요.
@@ -213,20 +228,28 @@ function handleMouseIn(e){
   // 색상이 약간 누리끼리해지더라구요(?) 약간 '흐릿'만 해지면 좋겠는데 다른 방법이 있을까요?
   targetBox.style.color = "rgba(255, 255, 255, 0.479)";
 }
+
 function handleMouseLeave(e){
   const [noneed, targetBox] = getTargetAndTurn(e);
   targetBox.textContent = null;
 }
 
-function marksPreview(){
+function markPreviewEvent(onOff, element){
+  if(onOff){
+    element.addEventListener("mouseenter", handleMouseIn);
+    element.addEventListener("mouseleave", handleMouseLeave);
+  }else{
+    element.removeEventListener("mouseenter", handleMouseIn);
+    element.removeEventListener("mouseleave", handleMouseLeave);
+  }
+}
+
+function gameStart(){
   // board.addEventListener("mouseenter", handleMouseIn);
   // 위 코드에서 mouseenter 는 이미 board로 들어갈 때 작동하여, 아래 div들로 이벤트 위임을 쓸 수 없는것 같은데,
   // 위임을 할 수 있는 다른 방법이 있을까요? map같은 걸로 일일이 주면 (작업이 클 땐) 안좋다구 해서요 ㅠ
-  boxsArray.map(e=> e.addEventListener("mouseenter", handleMouseIn));
-  boxsArray.map(e=> e.addEventListener("mouseleave", handleMouseLeave));
-}
-function gameStart(){
-  marksPreview();
+  isGameOver = false;
+  boxsArray.map(e=> markPreviewEvent(true, e));
   board.addEventListener("click", handleClick);
   resetBoard();
 }
@@ -234,6 +257,7 @@ function gameStart(){
 function handleStartBtn(e){
   gameStart();
   paintContent(startBtn, "ReStart");
+  displayChanger(betagoBtn, "none");
 }
 
 function init(){
