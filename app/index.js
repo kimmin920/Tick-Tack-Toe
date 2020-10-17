@@ -121,6 +121,7 @@ function resetBoard(){
 function gameOver(){
   // boxsArray.map(e=> e.removeEventListener("click", handleClick));
   board.removeEventListener("click", handleClick);
+  boxsArray.map(e=> e.removeEventListener("mouseenter", handleMouseIn));
   paintContent(tipTeller, "ReStart로 다시 도전하세YO");
 }
 
@@ -140,6 +141,11 @@ function paintDraw(){
   return true;
 }
 
+function paintScoreBoard(result){
+  const scoreBox = document.querySelector(`.scoreBoard__score${result}`);
+  paintContent(scoreBox, scoreBox.textContent + "正");
+}
+
 function getResult(){
   const result = calculateWinner(squares);
 
@@ -148,6 +154,7 @@ function getResult(){
     displayChanger(gameStatus__winner, "block");
     paintContent(winnerTeller, getTextsForTurnAndWin(result, "승리"));
     paintContent(turnTeller, null);
+    paintScoreBoard(result);
     gameOver();
     return;
   }
@@ -166,6 +173,8 @@ function getIsOccupied(targetId){
 
 function handleClick(e){
   const targetId = e.target.id;
+  boxsArray[targetId].removeEventListener("mouseleave", handleMouseLeave);
+  boxsArray[targetId].removeEventListener("mouseenter", handleMouseIn);
   const isOccupied = getIsOccupied(targetId);
   paintContent(tipTeller, getTip(isOccupied));
 
@@ -185,13 +194,36 @@ function handleClick(e){
   // const targetBox = document.getElementById(`${targetId}`);
 
   const targetBox = document.querySelector(`[id=${JSON.stringify(targetId)}]`);
+  targetBox.style.color = "rgb(255, 255, 255)";
   const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
   paintBox(targetBox, whosTurn);
   getResult();
 }
+function handleMouseIn(e){
+  const targetId = e.target.id;
+  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  // 중복
+  const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X"; // 중복
+  paintContent(targetBox, marks[whosTurn]);
 
+  // 아래 코드는, 바둑알 미리보기 할려구 색상의 투명화(?)를 줬는데요,
+  // 색상이 약간 누리끼리해지더라구요(?) 약간 '흐릿'만 해지면 좋겠는데 다른 방법이 있을까요?
+  targetBox.style.color = "rgba(255, 255, 255, 0.479)";
+}
+function handleMouseLeave(e){
+  const targetId = e.target.id;
+  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  // 중복
+  targetBox.textContent = null;
+}
+
+function marksPreview(){
+  // board.addEventListener("mouseenter", handleMouseIn);
+  // 위 코드에서 mouseenter 는 이미 board로 들어갈 때 작동하여, 아래 div들로 이벤트 위임을 쓸 수 없는것 같은데,
+  // 위임을 할 수 있는 다른 방법이 있을까요? map같은 걸로 일일이 주면 (작업이 클 땐) 안좋다구 해서요 ㅠ
+  boxsArray.map(e=> e.addEventListener("mouseenter", handleMouseIn));
+  boxsArray.map(e=> e.addEventListener("mouseleave", handleMouseLeave));
+}
 function gameStart(){
-  // boxsArray.map(e=> e.addEventListener("click", handleClick));
+  marksPreview();
   board.addEventListener("click", handleClick);
   resetBoard();
 }
