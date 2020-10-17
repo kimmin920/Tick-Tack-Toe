@@ -23,7 +23,7 @@ function handleBetagoClick(e){
     betagoBtn.style.color = "rgb(235, 147, 135)";
 
     // paintContent(player2Board, "배타고🚢(초급)"); textContent를 수정하니, 해당 div의 하위 div들이 사라지더라구요..
-    // textContent는 text만 바꾼다고 이해했는데, 잘못 이해했나봐요. text만 바꾸고 내부 div는 안건들이는 방법이 있나요?
+    // textContent는 text만 바꾼다고 이해했는데, 잘못 이해했나봐요. text만 바꾸고 내부 div는 안건드리는 방법이 있나요?
 
     paintContent(player2Text, "배타고🚢(초보)")
     player2Board.style["font-size"] = "35px";
