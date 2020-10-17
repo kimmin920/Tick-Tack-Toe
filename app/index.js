@@ -86,13 +86,13 @@ let squares = [
   null, null, null,
 ];
 
-function getTextsForTurnAndWin( turn, what = "차례" ){ //함수명.. 어케하면 좋을까요?
+function getTextsForTurnAndWin(turn, what = "차례" ){ //함수명.. 어케하면 좋을까요?
   turn = marks[turn] || null;
   return turn ? `${turn}의 ${what}입니다` : "무승부 입니다";
 }
 
-function paintContent(teller, what){
-  teller.textContent = what;
+function paintContent(teller, text){
+  teller.textContent = text;
 }
 
 function displayChanger(element, toWhat){
@@ -172,16 +172,26 @@ function getIsOccupied(targetId){
 }
 
 function handleClick(e){
-  const targetId = e.target.id;
+  const [targetId, targetBox, whosTurn] = getTargetAndTurn(e);
+  const isOccupied = getIsOccupied(targetId);
   boxsArray[targetId].removeEventListener("mouseleave", handleMouseLeave);
   boxsArray[targetId].removeEventListener("mouseenter", handleMouseIn);
-  const isOccupied = getIsOccupied(targetId);
   paintContent(tipTeller, getTip(isOccupied));
 
   if(isOccupied){
     return;
   }
 
+  targetBox.style.color = "rgb(255, 255, 255)";
+  paintBox(targetBox, whosTurn);
+  getResult();
+}
+function getTargetAndTurn(e){
+  const targetId = e.target.id;
+  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  //질문사항
+  const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
+  return [targetId, targetBox, whosTurn];
+  // 위의 targetBox를 만드는 것에 관한 질문입니다.
   // document.querySelector(`#${targetId}`);
   // 위는 오류가 나서 찾아봤더니 #숫자는 쓸수 없다는 것을 알게되었습니당. 이유는 그냥 셀렉터의 특성이라고 하던데..맞나요?
   // document.querySelector("[id='1']") 처럼 써야 한다고 해서 아래 코드처럼 string화 해서 썼습니당.
@@ -190,19 +200,13 @@ function handleClick(e){
   // const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);
 
   // querySelector로 통일하기 위해서 저렇게 했는데요! 더 좋은 방법이 있을까요?
-  // 아님 그냥 아래처럼 통일성이 없어도 getElmentById를 쓰는게 나을까요?
+  // 아님 그냥 아래처럼 통일성이 없어도 getElmentById를 쓰는게 나을까요? (사실 저는 걍 byId 쓰고싶어요ㅎㅎ..)
   // const targetBox = document.getElementById(`${targetId}`);
-
-  const targetBox = document.querySelector(`[id=${JSON.stringify(targetId)}]`);
-  targetBox.style.color = "rgb(255, 255, 255)";
-  const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
-  paintBox(targetBox, whosTurn);
-  getResult();
 }
 function handleMouseIn(e){
-  const targetId = e.target.id;
-  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  // 중복
-  const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X"; // 중복
+  // 아래는, 위에 켄님의 함수코드에서 보고 따라해봤는데, 왜 되는지는 이해는 안가네요...
+  // 그리고 필요없는 인자를 안가져올 방법이 있을지 생각해 볼게요.
+  const [noneed, targetBox, whosTurn] = getTargetAndTurn(e);
   paintContent(targetBox, marks[whosTurn]);
 
   // 아래 코드는, 바둑알 미리보기 할려구 색상의 투명화(?)를 줬는데요,
@@ -210,8 +214,7 @@ function handleMouseIn(e){
   targetBox.style.color = "rgba(255, 255, 255, 0.479)";
 }
 function handleMouseLeave(e){
-  const targetId = e.target.id;
-  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  // 중복
+  const [noneed, targetBox] = getTargetAndTurn(e);
   targetBox.textContent = null;
 }
 
