@@ -130,8 +130,8 @@ function gameOver(){
 
 function paintBox(targetBox, turn){
   let arrayOfTurn = turn === "O" ? arrayOfO : arrayOfX;
-  arrayOfTurn.push(targetBox.id);
-  squares[targetBox.id] = turn;
+  arrayOfTurn.push(targetBox.dataset.id);
+  squares[targetBox.dataset.id] = turn;
   paintContent(targetBox, marks[turn]);
   paintContent(turnTeller, getTextsForTurnAndWin(turn === "O" ? "X" : "O"));
 }
@@ -201,8 +201,8 @@ function handleClick(e){
 }
 
 function getTargetAndTurn(e){
-  const targetId = e.target.id;
-  const targetBox = document.querySelector(`#${CSS.escape(targetId)}`);  //질문사항
+  const targetId = e.target.dataset.id;
+  const targetBox = document.querySelector(`#box-${targetId}`);  //질문사항
   const whosTurn = (arrayOfO.length === arrayOfX.length) ? "O" : "X";
   return [targetId, targetBox, whosTurn];
   // 위의 targetBox를 만드는 것에 관한 질문입니다.

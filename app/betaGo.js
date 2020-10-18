@@ -4,14 +4,16 @@ const player2Text = document.querySelector(".player2Text");
 
 function getBoxForBetago(){
   let betagoObj = {
-    target: {},
+    target: {
+      dataset : {}
+    },
   };
 
   do {
     randomNum = Math.floor(Math.random()*9);
   }while(squares[randomNum]);
 
-  betagoObj.target.id = randomNum;
+  betagoObj.target.dataset.id = randomNum;
   return betagoObj;
 }
 
